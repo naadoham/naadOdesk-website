@@ -213,11 +213,28 @@
 
       <div class="form-group">
         <label>Referral Code</label>
-        <input type="text" id="referralCode" placeholder="Optional">
+        <input type="text" id="referralCode" placeholder="Optional" style="text-transform:uppercase">
+        <div id="refStatus" style="display:none;font-size:11px;margin-top:5px;padding:5px 10px;border-radius:6px;"></div>
       </div>
       <div class="form-group">
         <label>Coupon Code</label>
-        <input type="text" id="couponCode" placeholder="Optional">
+        <input type="text" id="couponCode" placeholder="Optional" style="text-transform:uppercase">
+        <div id="coupStatus" style="display:none;font-size:11px;margin-top:5px;padding:5px 10px;border-radius:6px;"></div>
+      </div>
+
+      <!-- Single Apply button -->
+      <button type="button" id="applyBtn" onclick="applyCodes()"
+        style="width:100%;padding:10px;background:rgba(10,132,255,.1);border:1px solid rgba(10,132,255,.3);border-radius:8px;color:#0a84ff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:10px;">
+        Apply Codes
+      </button>
+
+      <!-- Price summary (shown after apply) -->
+      <div id="discountBox" style="display:none;background:#0d1a0d;border:1px solid rgba(48,209,88,.2);border-radius:8px;padding:12px 14px;margin-bottom:10px;">
+        <div id="discountLines" style="font-size:12px;color:#aaa;line-height:1.9;"></div>
+        <div style="border-top:1px solid rgba(48,209,88,.15);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;">
+          <span style="font-size:12px;color:#888;">Total</span>
+          <span id="finalPriceDisplay" style="font-size:20px;font-weight:900;color:#30d158;"></span>
+        </div>
       </div>
 
       <input class="hp" type="text" id="_hp" tabindex="-1" autocomplete="off">
@@ -393,12 +410,147 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Price updates automatically when country changes
-  mobileInput.addEventListener("countrychange", updatePriceDisplay);
+  mobileInput.addEventListener("countrychange", () => {
+    updatePriceDisplay();
+    if(_appliedRef || _appliedCoup) refreshPriceSummary();
+  });
 });
 
 loadSettings();
 
 const _t0 = Date.now();
+
+// ── Applied discounts state ─────────────────────────────────
+let _appliedRef  = null;  // {code, disc}
+let _appliedCoup = null;  // {code, disc}
+
+function setStatus(id, text, ok) {
+  const el = document.getElementById(id);
+  if (!text) { el.style.display = 'none'; return; }
+  el.textContent    = text;
+  el.style.display  = 'block';
+  el.style.background = ok ? 'rgba(48,209,88,.08)' : 'rgba(255,78,106,.08)';
+  el.style.color      = ok ? '#30d158' : '#ff4e6a';
+  el.style.border     = ok ? '1px solid rgba(48,209,88,.2)' : '1px solid rgba(255,78,106,.2)';
+}
+
+function getBasePrice() {
+  if (!_settings || !iti) return { price: 999, symbol: '₹' };
+  const isIndia = (iti.getSelectedCountryData().iso2||'in').toLowerCase() === 'in';
+  return {
+    price:  isIndia ? Number(_settings.product_price_india||999) : Number(_settings.product_price_global||19),
+    symbol: isIndia ? '₹' : '$'
+  };
+}
+
+function refreshPriceSummary() {
+  const { price, symbol } = getBasePrice();
+  let final = price;
+  let html  = '';
+
+  if (_appliedCoup) {
+    html  += '<div>🏷️ Coupon <b style="color:#fff">' + _appliedCoup.code + '</b> &nbsp;<span style="color:#30d158">-' + symbol + _appliedCoup.disc + '</span></div>';
+    final -= _appliedCoup.disc;
+  }
+  if (_appliedRef) {
+    // Referral applied on price AFTER coupon (match backend logic)
+    const refDisc = _appliedRef.isPercent
+      ? Math.round(final * _appliedRef.pct / 100)
+      : _appliedRef.disc;
+    html  += '<div>🔗 Referral <b style="color:#fff">' + _appliedRef.code + '</b> &nbsp;<span style="color:#30d158">-' + symbol + refDisc + '</span></div>';
+    final -= refDisc;
+  }
+  final = Math.max(final, 1);
+
+  if (html) {
+    html = '<div style="color:#555;font-size:11px;margin-bottom:4px;">Original: <span style="text-decoration:line-through">'+symbol+price+'</span></div>' + html;
+    document.getElementById('discountLines').innerHTML = html;
+    document.getElementById('finalPriceDisplay').textContent = symbol + final;
+    document.getElementById('discountBox').style.display = 'block';
+    document.getElementById('btnBuy').textContent = 'Pay ' + symbol + final + ' — Buy License';
+  } else {
+    document.getElementById('discountBox').style.display = 'none';
+    updatePriceDisplay();
+  }
+}
+
+async function applyCodes() {
+  const refCode  = document.getElementById('referralCode').value.trim().toUpperCase();
+  const coupCode = document.getElementById('couponCode').value.trim().toUpperCase();
+  const btn      = document.getElementById('applyBtn');
+
+  // Clear previous
+  _appliedRef = null; _appliedCoup = null;
+  setStatus('refStatus',  '', true);
+  setStatus('coupStatus', '', true);
+
+  btn.textContent = 'Checking...';
+  btn.disabled    = true;
+
+  const { price, symbol } = getBasePrice();
+
+  // ── Validate Referral ──
+  if (refCode) {
+    try {
+      const res  = await fetch(SB_URL+'/rest/v1/referrals?referral_code=eq.'+encodeURIComponent(refCode)+'&select=*',
+        { headers: { apikey: SB_ANON_KEY, Authorization: 'Bearer '+SB_ANON_KEY }});
+      const data = await res.json();
+      if (!data?.length) {
+        setStatus('refStatus', '❌ Referral code not found', false);
+      } else {
+        const ref = data[0];
+        let disc  = 0;
+        if (ref.discount_type === 'percent' && ref.discount_value > 0)
+          disc = Math.round(price * ref.discount_value / 100);
+        else if (ref.discount_type === 'flat' && ref.discount_value > 0)
+          disc = Number(ref.discount_value);
+        // Store percent info for accurate calculation after coupon
+        _appliedRef = {
+          code: refCode,
+          disc: disc,
+          isPercent: ref.discount_type === 'percent',
+          pct: ref.discount_type === 'percent' ? ref.discount_value : 0
+        };
+        // Show estimated discount
+        const estDisc = _appliedCoup
+          ? Math.round((price - _appliedCoup.disc) * (ref.discount_value||0) / 100)
+          : disc;
+        setStatus('refStatus', disc > 0 ? '✅ Applied' : '✅ Applied', true);
+      }
+    } catch(e) { setStatus('refStatus', '⚠️ Could not verify', false); }
+  }
+
+  // ── Validate Coupon ──
+  if (coupCode) {
+    try {
+      const res  = await fetch(SB_URL+'/rest/v1/coupons?code=eq.'+encodeURIComponent(coupCode)+'&select=*',
+        { headers: { apikey: SB_ANON_KEY, Authorization: 'Bearer '+SB_ANON_KEY }});
+      const data = await res.json();
+      if (!data?.length) {
+        setStatus('coupStatus', '❌ Coupon not found', false);
+      } else {
+        const cp = data[0];
+        if (cp.is_disabled)
+          setStatus('coupStatus', '❌ Coupon is disabled', false);
+        else if (cp.max_uses && cp.used_count >= cp.max_uses)
+          setStatus('coupStatus', '❌ Coupon usage limit reached', false);
+        else if (cp.expiry_date && new Date(cp.expiry_date) < new Date())
+          setStatus('coupStatus', '❌ Coupon has expired', false);
+        else {
+          const disc = Math.round(price * cp.discount_percent / 100);
+          _appliedCoup = { code: coupCode, disc };
+          setStatus('coupStatus', '✅ Applied — ' + symbol + disc + ' off', true);
+        }
+      }
+    } catch(e) { setStatus('coupStatus', '⚠️ Could not verify', false); }
+  }
+
+  btn.textContent = 'Apply Codes';
+  btn.disabled    = false;
+  refreshPriceSummary();
+}
+
+
 
 function showState(id) {
   ["stateForm","stateProcessing","stateSuccess","stateError"]
