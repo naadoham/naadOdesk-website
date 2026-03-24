@@ -523,7 +523,7 @@ fetch("https://ipapi.co/json/")
 // ── Load settings + update all prices ───────────────────────
 async function loadSettings() {
   try {
-    const res  = await fetch(SB_URL + "/rest/v1/settings?id=eq.1", {
+    const res  = await fetch(SB_URL + "/rest/v1/settings?select=*&limit=1", {
       headers: { "apikey": SB_ANON_KEY, "Authorization": "Bearer " + SB_ANON_KEY }
     });
     if (!res.ok) throw new Error("HTTP " + res.status);
@@ -872,4 +872,29 @@ async function startPayment() {
           });
           if (r.ok) { const j = await r.json(); if (j?.license_key) { break; } }
         } catch(e) {}
-        await new
+        await new Promise(r => setTimeout(r, 5000));
+      }
+      // Show success
+      document.getElementById("processingMsg").textContent = "✅ Payment successful! Check your email for the license key.";
+      showState("stateSuccess");
+    }
+  });
+  rzp.open();
+}
+
+// ── Scroll reveal ─────────────────────────────────────────────
+const _observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("v"); _observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll(".reveal").forEach(el => _observer.observe(el));
+
+// ── FAQ accordion ─────────────────────────────────────────────
+document.querySelectorAll(".faq-q").forEach(q => {
+  q.addEventListener("click", () => {
+    const item = q.parentElement;
+    item.classList.toggle("open");
+  });
+});
+</script>
+</body>
+</html>
