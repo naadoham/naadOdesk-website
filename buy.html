@@ -389,18 +389,12 @@ function refreshPriceSummary() {
   }
 
   if (_appliedRef) {
-    if (_appliedRef.unverified) {
-      // RLS blocked frontend read — backend (service role) will compute & apply correct discount
-      html += "<div>\uD83D\uDD17 Referral <b style='color:#fff'>" + _appliedRef.code +
-              "</b> &nbsp;<span style='color:#aaa;font-size:11px'>(discount applied at checkout)</span></div>";
-    } else {
-      const refDisc = _appliedRef.isPercent
-        ? Math.round(final * _appliedRef.pct / 100)
-        : _appliedRef.disc;
-      html  += "<div>\uD83D\uDD17 Referral <b style='color:#fff'>" + _appliedRef.code +
-               "</b> &nbsp;<span style='color:#30d158'>-" + symbol + refDisc + "</span></div>";
-      final -= refDisc;
-    }
+    const refDisc = _appliedRef.isPercent
+      ? Math.round(final * _appliedRef.pct / 100)
+      : _appliedRef.disc;
+    html  += "<div>\uD83D\uDD17 Referral <b style='color:#fff'>" + _appliedRef.code +
+             "</b> &nbsp;<span style='color:#30d158'>-" + symbol + refDisc + "</span></div>";
+    final -= refDisc;
   }
 
   final = Math.max(final, 1);
@@ -411,9 +405,7 @@ function refreshPriceSummary() {
     document.getElementById("discountLines").innerHTML = html;
     document.getElementById("finalPriceDisplay").textContent = symbol + final;
     document.getElementById("discountBox").style.display = "block";
-    // Update button only when we know exact final price (no unverified referral)
-    if (!_appliedRef || !_appliedRef.unverified)
-      document.getElementById("btnBuy").textContent = "Pay " + symbol + final + " \u2014 Buy License";
+    document.getElementById("btnBuy").textContent = "Pay " + symbol + final + " \u2014 Buy License";
   } else {
     document.getElementById("discountBox").style.display = "none";
     updatePriceDisplay();
@@ -452,15 +444,11 @@ async function applyCodes() {
       const data = await res.json();
 
       if (!Array.isArray(data)) {
-        // Unexpected response — save anyway
-        _appliedRef = { code: refCode, disc: 0, isPercent: false, pct: 0, unverified: true };
-        setStatus("refStatus", "\u2705 Referral saved \u2014 discount applied at checkout", true);
+        setStatus("refStatus", "\u26A0\uFE0F Could not verify referral. Try again.", false);
 
       } else if (data.length === 0) {
-        // Either RLS blocked the read OR code doesn't exist.
-        // We save it and let the backend decide — if invalid, backend ignores it silently.
-        _appliedRef = { code: refCode, disc: 0, isPercent: false, pct: 0, unverified: true };
-        setStatus("refStatus", "\u2705 Referral saved \u2014 discount applied at checkout", true);
+        // Code not found in DB (RLS policy must be created for this to work correctly)
+        setStatus("refStatus", "\u274C Referral code not found", false);
 
       } else {
         // RLS allows anon read — compute exact discount here
@@ -482,9 +470,7 @@ async function applyCodes() {
           disc > 0 ? "\u2705 Applied \u2014 " + symbol + disc + " off" : "\u2705 Applied", true);
       }
     } catch(e) {
-      // Network error — save and trust backend
-      _appliedRef = { code: refCode, disc: 0, isPercent: false, pct: 0, unverified: true };
-      setStatus("refStatus", "\u2705 Referral saved \u2014 discount applied at checkout", true);
+      setStatus("refStatus", "\u26A0\uFE0F Could not verify referral. Check internet.", false);
     }
   }
 
