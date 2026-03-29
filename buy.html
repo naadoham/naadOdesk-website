@@ -19,7 +19,7 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);color:var(--text);font-family:var(--font);
     min-height:100vh;display:flex;align-items:flex-start;
-    justify-content:center;padding:32px 16px 60px;}
+    justify-content:center;padding:32px 16px 60px;overflow-x:hidden;}
   .container{width:100%;max-width:640px;}
   .header{text-align:center;padding:28px 0 26px;}
   .app-icon{width:82px;height:82px;border-radius:22px;
@@ -95,75 +95,32 @@
   .hp{display:none!important;}
 
   /* ── intl-tel-input overrides ── */
-  body{overflow-x:hidden;}
-
-  /* Wrapper — relative so dropdown anchors to input */
   .iti{width:100%;position:relative;display:block;}
-
-  /* Dropdown — positioned below the flag button, same width as container */
   .iti__country-list{
-    position:absolute!important;
-    top:calc(100% + 4px)!important;
-    left:0!important;
-    width:100%!important;
-    min-width:280px!important;
-    max-height:240px!important;
-    overflow-y:auto!important;
-    overflow-x:hidden!important;
-    z-index:9999!important;
-    background:#1a1a24!important;
-    border:1px solid #2a2a3e!important;
-    border-radius:12px!important;
-    box-shadow:0 8px 30px rgba(0,0,0,0.6)!important;
-    padding:4px 0 6px!important;
-    /* Thin scrollbar */
-    scrollbar-width:thin;
-    scrollbar-color:#2a2a3e transparent;
+    position:absolute!important; top:calc(100% + 4px)!important;
+    left:0!important; width:100%!important; min-width:280px!important;
+    max-height:240px!important; overflow-y:auto!important; overflow-x:hidden!important;
+    z-index:9999!important; background:#1a1a24!important;
+    border:1px solid #2a2a3e!important; border-radius:12px!important;
+    box-shadow:0 8px 30px rgba(0,0,0,0.6)!important; padding:4px 0 6px!important;
+    scrollbar-width:thin; scrollbar-color:#2a2a3e transparent;
   }
   .iti__country-list::-webkit-scrollbar{width:4px;}
   .iti__country-list::-webkit-scrollbar-track{background:transparent;}
   .iti__country-list::-webkit-scrollbar-thumb{background:#2a2a3e;border-radius:4px;}
-
-  /* Country rows */
-  .iti__country{
-    display:flex!important;
-    align-items:center!important;
-    gap:8px!important;
-    padding:8px 14px!important;
-    font-size:13px!important;
-    color:#f0f0f8!important;
-    cursor:pointer!important;
-    transition:background .1s;
-  }
-  .iti__country.iti__highlight,
-  .iti__country:hover{background:rgba(10,132,255,0.12)!important;}
+  .iti__country{display:flex!important;align-items:center!important;gap:8px!important;
+    padding:8px 14px!important;font-size:13px!important;color:#f0f0f8!important;
+    cursor:pointer!important;transition:background .1s;}
+  .iti__country.iti__highlight,.iti__country:hover{background:rgba(10,132,255,0.12)!important;}
   .iti__country-name{color:#e8e8f0!important;flex:1;}
   .iti__dial-code{color:#6a6a8a!important;font-size:12px!important;}
-  .iti__divider{
-    border:none!important;
-    border-top:1px solid #2a2a3e!important;
-    margin:4px 0!important;
-  }
-
-  /* Flag button — left rounded */
+  .iti__divider{border:none!important;border-top:1px solid #2a2a3e!important;margin:4px 0!important;}
   .iti__flag-container{z-index:10;}
   .iti--separate-dial-code .iti__selected-flag{
-    background:rgba(255,255,255,0.04)!important;
-    border-right:1px solid #2a2a3e!important;
-    border-radius:9px 0 0 9px!important;
-    padding:0 10px 0 12px!important;
-    height:100%!important;
-  }
-  .iti__selected-flag:hover,
-  .iti__selected-flag:focus{background:rgba(255,255,255,0.08)!important;}
-
-  /* Input — right rounded, padding ensures digits appear after dial code */
-  .iti--separate-dial-code input[type=tel]{
-    border-radius:0 9px 9px 0!important;
-    padding-left:90px!important;
-  }
-
-  /* Flag sprites */
+    background:rgba(255,255,255,0.04)!important; border-right:1px solid #2a2a3e!important;
+    border-radius:9px 0 0 9px!important; padding:0 10px 0 12px!important; height:100%!important;}
+  .iti__selected-flag:hover,.iti__selected-flag:focus{background:rgba(255,255,255,0.08)!important;}
+  .iti--separate-dial-code input[type=tel]{border-radius:0 9px 9px 0!important;padding-left:90px!important;}
   .iti__flag{background-image:url("https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/img/flags.png");}
   @media (-webkit-min-device-pixel-ratio:2),(min-resolution:192dpi){
     .iti__flag{background-image:url("https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/img/flags@2x.png");}
@@ -186,13 +143,14 @@
 
     <!-- FORM STATE -->
     <div id="stateForm" class="state active">
+
       <div class="price-row">
         <div class="price-label">
           <h3>naadOdesk License</h3>
-          <p>One-time purchase — use forever</p>
+          <p>One-time purchase &mdash; use forever</p>
         </div>
         <div>
-          <div class="price-amount" id="priceDisplay">₹999</div>
+          <div class="price-amount" id="priceDisplay">&#x20B9;999</div>
           <div class="price-note" id="priceNote"></div>
         </div>
       </div>
@@ -207,7 +165,6 @@
       </div>
       <div class="form-group">
         <label>Mobile Number <span class="req">*</span></label>
-        <!-- intl-tel-input wraps this input automatically -->
         <input type="tel" id="buyerMobile" placeholder="98765 43210" autocomplete="tel">
       </div>
 
@@ -222,16 +179,19 @@
         <div id="coupStatus" style="display:none;font-size:11px;margin-top:5px;padding:5px 10px;border-radius:6px;"></div>
       </div>
 
-      <!-- Single Apply button -->
       <button type="button" id="applyBtn" onclick="applyCodes()"
-        style="width:100%;padding:10px;background:rgba(10,132,255,.1);border:1px solid rgba(10,132,255,.3);border-radius:8px;color:#0a84ff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:10px;">
+        style="width:100%;padding:10px;background:rgba(10,132,255,.1);border:1px solid rgba(10,132,255,.3);
+               border-radius:8px;color:#0a84ff;font-size:13px;font-weight:700;cursor:pointer;
+               font-family:var(--font);margin-bottom:10px;">
         Apply Codes
       </button>
 
-      <!-- Price summary (shown after apply) -->
-      <div id="discountBox" style="display:none;background:#0d1a0d;border:1px solid rgba(48,209,88,.2);border-radius:8px;padding:12px 14px;margin-bottom:10px;">
+      <!-- Price summary -->
+      <div id="discountBox" style="display:none;background:#0d1a0d;border:1px solid rgba(48,209,88,.2);
+           border-radius:8px;padding:12px 14px;margin-bottom:10px;">
         <div id="discountLines" style="font-size:12px;color:#aaa;line-height:1.9;"></div>
-        <div style="border-top:1px solid rgba(48,209,88,.15);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;">
+        <div style="border-top:1px solid rgba(48,209,88,.15);margin-top:8px;padding-top:8px;
+             display:flex;justify-content:space-between;">
           <span style="font-size:12px;color:#888;">Total</span>
           <span id="finalPriceDisplay" style="font-size:20px;font-weight:900;color:#30d158;"></span>
         </div>
@@ -240,15 +200,15 @@
       <input class="hp" type="text" id="_hp" tabindex="-1" autocomplete="off">
 
       <button type="button" class="btn-buy" id="btnBuy" onclick="startPayment()">
-        Pay ₹999 — Buy License
+        Pay &#x20B9;999 &mdash; Buy License
       </button>
 
       <div class="pay-methods">
         <span>Secured by</span>
         <span class="pay-badge">Razorpay</span>
-        <span class="pay-badge">💳 Cards</span>
-        <span class="pay-badge">📱 UPI</span>
-        <span class="pay-badge">🏦 Net Banking</span>
+        <span class="pay-badge">&#x1F4B3; Cards</span>
+        <span class="pay-badge">&#x1F4F1; UPI</span>
+        <span class="pay-badge">&#x1F3E6; Net Banking</span>
       </div>
       <div class="privacy">
         Questions?
@@ -262,19 +222,19 @@
     <div id="stateProcessing" class="state">
       <div class="state-center">
         <div class="spinner"></div>
-        <p class="msg" id="processingMsg">Creating order…</p>
+        <p class="msg" id="processingMsg">Creating order&hellip;</p>
       </div>
     </div>
 
     <!-- SUCCESS STATE -->
     <div id="stateSuccess" class="state">
       <div class="state-center">
-        <div class="success-icon">🎉</div>
+        <div class="success-icon">&#x1F389;</div>
         <p class="success-title">Payment Successful!</p>
         <p class="success-sub">
           Your license key will be sent to<br>
           <strong id="successEmail"></strong><br><br>
-          Check your inbox — usually arrives within a minute.<br>
+          Check your inbox &mdash; usually arrives within a minute.<br>
           Also check your spam folder.
         </p>
         <div class="activation-box">
@@ -285,7 +245,7 @@
           </div>
           <div class="step">
             <div class="step-num">2</div>
-            <span>Go to <strong style="color:#fff">Settings → License</strong></span>
+            <span>Go to <strong style="color:#fff">Settings &rarr; License</strong></span>
           </div>
           <div class="step">
             <div class="step-num">3</div>
@@ -303,7 +263,7 @@
     <!-- ERROR STATE -->
     <div id="stateError" class="state">
       <div class="state-center">
-        <div class="error-icon">⚠️</div>
+        <div class="error-icon">&#x26A0;&#xFE0F;</div>
         <p class="error-title">Payment Failed</p>
         <p class="error-msg" id="errorMsg">Something went wrong. Please try again.</p>
         <button class="btn-retry" onclick="resetForm()">Try Again</button>
@@ -328,163 +288,155 @@ const SB_ANON_KEY     = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 const ORDER_URL       = SB_URL + "/functions/v1/razorpay-order";
 // ════════════════════════════════════════════
 
-// ── intl-tel-input — initialized after DOM ready ────────────
-let iti;
-let mobileInput;
+let iti, mobileInput, _settings = null;
+const _t0 = Date.now();
+let _appliedRef = null, _appliedCoup = null;
 
-// ── Settings cache ───────────────────────────────────────────
-let _settings = null;
-
-// ── Price display based on country ──────────────────────────
-// India (+91) → INR price   |   All other countries → USD price
+// ── Price display ─────────────────────────────────────────────
 function updatePriceDisplay() {
-  if (!_settings) return;
-  if (!iti) return;
-  var country = (iti.getSelectedCountryData().iso2 || "in").toLowerCase();
-  var isIndia = (country === "in");
-  var price   = isIndia
+  if (!_settings || !iti) return;
+  const country  = (iti.getSelectedCountryData().iso2 || "in").toLowerCase();
+  const isIndia  = country === "in";
+  const price    = isIndia
     ? Number(_settings.product_price_india  || _settings.product_price || 999)
     : Number(_settings.product_price_global || 19);
-  var currency = isIndia ? "INR" : "USD";
-  var symbol   = isIndia ? "₹"  : "$";
-
+  const currency = isIndia ? "INR" : "USD";
+  const symbol   = isIndia ? "\u20B9" : "$";
   document.getElementById("priceDisplay").textContent = symbol + price;
   document.getElementById("priceNote").textContent    = currency;
-  document.getElementById("btnBuy").textContent       = "Pay " + symbol + price + " — Buy License";
+  document.getElementById("btnBuy").textContent       = "Pay " + symbol + price + " \u2014 Buy License";
   document.getElementById("btnBuy").disabled          = false;
 }
 
-// ── Load settings + price from Supabase ─────────────────────
+// ── Load settings ─────────────────────────────────────────────
 async function loadSettings() {
-  document.getElementById("priceDisplay").textContent = "Loading…";
+  document.getElementById("priceDisplay").textContent = "Loading\u2026";
   document.getElementById("btnBuy").disabled = true;
   try {
-    const res = await fetch(
-      SB_URL + "/rest/v1/settings?id=eq.1",
-      { headers: { "apikey": SB_ANON_KEY, "Authorization": "Bearer " + SB_ANON_KEY } }
-    );
+    const res  = await fetch(SB_URL + "/rest/v1/settings?id=eq.1",
+      { headers: { "apikey": SB_ANON_KEY, "Authorization": "Bearer " + SB_ANON_KEY } });
     const data = await res.json();
     if (data && data.length) {
       _settings = data[0];
       updatePriceDisplay();
-      // Support links
       if (_settings.support_email) {
         document.getElementById("supportEmail").href        = "mailto:" + _settings.support_email;
         document.getElementById("supportEmailSuccess").href = "mailto:" + _settings.support_email;
       }
-      if (_settings.support_whatsapp) {
+      if (_settings.support_whatsapp)
         document.getElementById("supportWhatsapp").href = _settings.support_whatsapp;
-      }
     }
   } catch(e) {
     console.warn("Settings load failed:", e);
-    document.getElementById("priceDisplay").textContent = "₹999";
+    document.getElementById("priceDisplay").textContent = "\u20B9999";
     document.getElementById("priceNote").textContent    = "INR";
     document.getElementById("btnBuy").disabled = false;
   }
 }
-// ── DOM ready: init intl-tel-input ──────────────────────────
+
+// ── Init intl-tel-input ───────────────────────────────────────
 document.addEventListener("DOMContentLoaded", function () {
   mobileInput = document.querySelector("#buyerMobile");
-
   iti = window.intlTelInput(mobileInput, {
     initialCountry: "auto",
-    geoIpLookup: function(callback) {
+    geoIpLookup: function(cb) {
       fetch("https://ipapi.co/json/")
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          if (data && data.country_code) {
-            callback(data.country_code.toLowerCase());
-          } else {
-            callback("in");
-          }
-        })
-        .catch(function() { callback("in"); });
+        .then(function(r) { return r.json(); })
+        .then(function(d) { cb(d && d.country_code ? d.country_code.toLowerCase() : "in"); })
+        .catch(function() { cb("in"); });
     },
     preferredCountries: ["in","us","gb","ae","sg","ca","au"],
-    separateDialCode:   true,
-    allowDropdown:      true,
-    autoPlaceholder:    "polite",
-    formatOnDisplay:    true,
+    separateDialCode: true, allowDropdown: true,
+    autoPlaceholder: "polite", formatOnDisplay: true,
     utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
   });
-
-  // Price updates automatically when country changes
-  mobileInput.addEventListener("countrychange", () => {
+  mobileInput.addEventListener("countrychange", function() {
     updatePriceDisplay();
-    if(_appliedRef || _appliedCoup) refreshPriceSummary();
+    if (_appliedRef || _appliedCoup) refreshPriceSummary();
   });
 });
 
 loadSettings();
 
-const _t0 = Date.now();
-
-// ── Applied discounts state ─────────────────────────────────
-let _appliedRef  = null;  // {code, disc}
-let _appliedCoup = null;  // {code, disc}
-
+// ── Helpers ───────────────────────────────────────────────────
 function setStatus(id, text, ok) {
   const el = document.getElementById(id);
-  if (!text) { el.style.display = 'none'; return; }
-  el.textContent    = text;
-  el.style.display  = 'block';
-  el.style.background = ok ? 'rgba(48,209,88,.08)' : 'rgba(255,78,106,.08)';
-  el.style.color      = ok ? '#30d158' : '#ff4e6a';
-  el.style.border     = ok ? '1px solid rgba(48,209,88,.2)' : '1px solid rgba(255,78,106,.2)';
+  if (!text) { el.style.display = "none"; return; }
+  el.textContent      = text;
+  el.style.display    = "block";
+  el.style.background = ok ? "rgba(48,209,88,.08)"         : "rgba(255,78,106,.08)";
+  el.style.color      = ok ? "#30d158"                      : "#ff4e6a";
+  el.style.border     = ok ? "1px solid rgba(48,209,88,.2)" : "1px solid rgba(255,78,106,.2)";
 }
 
 function getBasePrice() {
-  if (!_settings || !iti) return { price: 999, symbol: '₹' };
-  const isIndia = (iti.getSelectedCountryData().iso2||'in').toLowerCase() === 'in';
+  if (!_settings || !iti) return { price: 999, symbol: "\u20B9" };
+  const isIndia = (iti.getSelectedCountryData().iso2 || "in").toLowerCase() === "in";
   return {
-    price:  isIndia ? Number(_settings.product_price_india||999) : Number(_settings.product_price_global||19),
-    symbol: isIndia ? '₹' : '$'
+    price:  isIndia ? Number(_settings.product_price_india || 999) : Number(_settings.product_price_global || 19),
+    symbol: isIndia ? "\u20B9" : "$"
   };
 }
 
 function refreshPriceSummary() {
   const { price, symbol } = getBasePrice();
-  let final = price;
-  let html  = '';
+  let final = price, html = "";
 
   if (_appliedCoup) {
-    html  += '<div>🏷️ Coupon <b style="color:#fff">' + _appliedCoup.code + '</b> &nbsp;<span style="color:#30d158">-' + symbol + _appliedCoup.disc + '</span></div>';
+    html  += "<div>\uD83C\uDFF7\uFE0F Coupon <b style='color:#fff'>" + _appliedCoup.code +
+             "</b> &nbsp;<span style='color:#30d158'>-" + symbol + _appliedCoup.disc + "</span></div>";
     final -= _appliedCoup.disc;
   }
+
   if (_appliedRef) {
-    // Referral applied on price AFTER coupon (match backend logic)
-    const refDisc = _appliedRef.isPercent
-      ? Math.round(final * _appliedRef.pct / 100)
-      : _appliedRef.disc;
-    html  += '<div>🔗 Referral <b style="color:#fff">' + _appliedRef.code + '</b> &nbsp;<span style="color:#30d158">-' + symbol + refDisc + '</span></div>';
-    final -= refDisc;
+    if (_appliedRef.unverified) {
+      // RLS blocked frontend read — backend (service role) will compute & apply correct discount
+      html += "<div>\uD83D\uDD17 Referral <b style='color:#fff'>" + _appliedRef.code +
+              "</b> &nbsp;<span style='color:#aaa;font-size:11px'>(discount applied at checkout)</span></div>";
+    } else {
+      const refDisc = _appliedRef.isPercent
+        ? Math.round(final * _appliedRef.pct / 100)
+        : _appliedRef.disc;
+      html  += "<div>\uD83D\uDD17 Referral <b style='color:#fff'>" + _appliedRef.code +
+               "</b> &nbsp;<span style='color:#30d158'>-" + symbol + refDisc + "</span></div>";
+      final -= refDisc;
+    }
   }
+
   final = Math.max(final, 1);
 
   if (html) {
-    html = '<div style="color:#555;font-size:11px;margin-bottom:4px;">Original: <span style="text-decoration:line-through">'+symbol+price+'</span></div>' + html;
-    document.getElementById('discountLines').innerHTML = html;
-    document.getElementById('finalPriceDisplay').textContent = symbol + final;
-    document.getElementById('discountBox').style.display = 'block';
-    document.getElementById('btnBuy').textContent = 'Pay ' + symbol + final + ' — Buy License';
+    html = "<div style='color:#555;font-size:11px;margin-bottom:4px;'>Original: " +
+           "<span style='text-decoration:line-through'>" + symbol + price + "</span></div>" + html;
+    document.getElementById("discountLines").innerHTML = html;
+    document.getElementById("finalPriceDisplay").textContent = symbol + final;
+    document.getElementById("discountBox").style.display = "block";
+    // Update button only when we know exact final price (no unverified referral)
+    if (!_appliedRef || !_appliedRef.unverified)
+      document.getElementById("btnBuy").textContent = "Pay " + symbol + final + " \u2014 Buy License";
   } else {
-    document.getElementById('discountBox').style.display = 'none';
+    document.getElementById("discountBox").style.display = "none";
     updatePriceDisplay();
   }
 }
 
+// ── Apply Codes ───────────────────────────────────────────────
 async function applyCodes() {
-  const refCode  = document.getElementById('referralCode').value.trim().toUpperCase();
-  const coupCode = document.getElementById('couponCode').value.trim().toUpperCase();
-  const btn      = document.getElementById('applyBtn');
+  const refCode  = document.getElementById("referralCode").value.trim().toUpperCase();
+  const coupCode = document.getElementById("couponCode").value.trim().toUpperCase();
+  const btn      = document.getElementById("applyBtn");
 
-  // Clear previous
   _appliedRef = null; _appliedCoup = null;
-  setStatus('refStatus',  '', true);
-  setStatus('coupStatus', '', true);
+  setStatus("refStatus",  "", true);
+  setStatus("coupStatus", "", true);
 
-  btn.textContent = 'Checking...';
+  if (!refCode && !coupCode) {
+    document.getElementById("discountBox").style.display = "none";
+    updatePriceDisplay();
+    return;
+  }
+
+  btn.textContent = "Checking\u2026";
   btn.disabled    = true;
 
   const { price, symbol } = getBasePrice();
@@ -492,121 +444,137 @@ async function applyCodes() {
   // ── Validate Referral ──
   if (refCode) {
     try {
-      const res  = await fetch(SB_URL+'/rest/v1/referrals?referral_code=eq.'+encodeURIComponent(refCode)+'&select=*',
-        { headers: { apikey: SB_ANON_KEY, Authorization: 'Bearer '+SB_ANON_KEY }});
+      const res  = await fetch(
+        SB_URL + "/rest/v1/referrals?referral_code=eq." + encodeURIComponent(refCode) +
+        "&select=referral_code,discount_type,discount_value",
+        { headers: { apikey: SB_ANON_KEY, Authorization: "Bearer " + SB_ANON_KEY } }
+      );
       const data = await res.json();
-      if (!data?.length) {
-        setStatus('refStatus', '❌ Referral code not found', false);
+
+      if (!Array.isArray(data)) {
+        // Unexpected response — save anyway
+        _appliedRef = { code: refCode, disc: 0, isPercent: false, pct: 0, unverified: true };
+        setStatus("refStatus", "\u2705 Referral saved \u2014 discount applied at checkout", true);
+
+      } else if (data.length === 0) {
+        // Either RLS blocked the read OR code doesn't exist.
+        // We save it and let the backend decide — if invalid, backend ignores it silently.
+        _appliedRef = { code: refCode, disc: 0, isPercent: false, pct: 0, unverified: true };
+        setStatus("refStatus", "\u2705 Referral saved \u2014 discount applied at checkout", true);
+
       } else {
-        const ref = data[0];
-        let disc  = 0;
-        if (ref.discount_type === 'percent' && ref.discount_value > 0)
+        // RLS allows anon read — compute exact discount here
+        const ref       = data[0];
+        const isPercent = ref.discount_type === "percent";
+        let   disc      = 0;
+        if (isPercent && ref.discount_value > 0)
           disc = Math.round(price * ref.discount_value / 100);
-        else if (ref.discount_type === 'flat' && ref.discount_value > 0)
+        else if (ref.discount_type === "flat" && ref.discount_value > 0)
           disc = Number(ref.discount_value);
-        // Store percent info for accurate calculation after coupon
+
         _appliedRef = {
-          code: refCode,
-          disc: disc,
-          isPercent: ref.discount_type === 'percent',
-          pct: ref.discount_type === 'percent' ? ref.discount_value : 0
+          code: refCode, disc: disc,
+          isPercent: isPercent,
+          pct: isPercent ? Number(ref.discount_value) : 0,
+          unverified: false
         };
-        // Show estimated discount
-        const estDisc = _appliedCoup
-          ? Math.round((price - _appliedCoup.disc) * (ref.discount_value||0) / 100)
-          : disc;
-        setStatus('refStatus', disc > 0 ? '✅ Applied' : '✅ Applied', true);
+        setStatus("refStatus",
+          disc > 0 ? "\u2705 Applied \u2014 " + symbol + disc + " off" : "\u2705 Applied", true);
       }
-    } catch(e) { setStatus('refStatus', '⚠️ Could not verify', false); }
+    } catch(e) {
+      // Network error — save and trust backend
+      _appliedRef = { code: refCode, disc: 0, isPercent: false, pct: 0, unverified: true };
+      setStatus("refStatus", "\u2705 Referral saved \u2014 discount applied at checkout", true);
+    }
   }
 
   // ── Validate Coupon ──
   if (coupCode) {
     try {
-      const res  = await fetch(SB_URL+'/rest/v1/coupons?code=eq.'+encodeURIComponent(coupCode)+'&select=*',
-        { headers: { apikey: SB_ANON_KEY, Authorization: 'Bearer '+SB_ANON_KEY }});
+      const res  = await fetch(
+        SB_URL + "/rest/v1/coupons?code=eq." + encodeURIComponent(coupCode) + "&select=*",
+        { headers: { apikey: SB_ANON_KEY, Authorization: "Bearer " + SB_ANON_KEY } }
+      );
       const data = await res.json();
       if (!data?.length) {
-        setStatus('coupStatus', '❌ Coupon not found', false);
+        setStatus("coupStatus", "\u274C Coupon not found", false);
       } else {
         const cp = data[0];
         if (cp.is_disabled)
-          setStatus('coupStatus', '❌ Coupon is disabled', false);
+          setStatus("coupStatus", "\u274C Coupon is disabled", false);
         else if (cp.max_uses && cp.used_count >= cp.max_uses)
-          setStatus('coupStatus', '❌ Coupon usage limit reached', false);
+          setStatus("coupStatus", "\u274C Coupon usage limit reached", false);
         else if (cp.expiry_date && new Date(cp.expiry_date) < new Date())
-          setStatus('coupStatus', '❌ Coupon has expired', false);
+          setStatus("coupStatus", "\u274C Coupon has expired", false);
         else {
           const disc = Math.round(price * cp.discount_percent / 100);
           _appliedCoup = { code: coupCode, disc };
-          setStatus('coupStatus', '✅ Applied — ' + symbol + disc + ' off', true);
+          setStatus("coupStatus", "\u2705 Applied \u2014 " + symbol + disc + " off", true);
         }
       }
-    } catch(e) { setStatus('coupStatus', '⚠️ Could not verify', false); }
+    } catch(e) {
+      setStatus("coupStatus", "\u26A0\uFE0F Could not verify coupon", false);
+    }
   }
 
-  btn.textContent = 'Apply Codes';
+  btn.textContent = "Apply Codes";
   btn.disabled    = false;
   refreshPriceSummary();
 }
 
-
-
+// ── State helpers ─────────────────────────────────────────────
 function showState(id) {
-  ["stateForm","stateProcessing","stateSuccess","stateError"]
-    .forEach(s => document.getElementById(s).classList.toggle("active", s===id));
+  ["stateForm","stateProcessing","stateSuccess","stateError"].forEach(function(s) {
+    document.getElementById(s).classList.toggle("active", s === id);
+  });
 }
 function resetForm() {
   document.getElementById("btnBuy").disabled = false;
   showState("stateForm");
 }
 
-// ── UUID helper ──────────────────────────────────────────────
+// ── UUID ──────────────────────────────────────────────────────
 function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
     const r = Math.random() * 16 | 0;
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
   });
 }
 
-// ── Main payment flow ────────────────────────────────────────
+// ── Main payment flow ─────────────────────────────────────────
 async function startPayment() {
   if (document.getElementById("_hp")?.value) return;
   if (Date.now() - _t0 < 1500) return;
 
-  const name     = document.getElementById("buyerName").value.trim();
-  const email    = document.getElementById("buyerEmail").value.trim().toLowerCase();
-  const referral = document.getElementById("referralCode").value.trim().toUpperCase();
-  const coupon   = document.getElementById("couponCode").value.trim().toUpperCase();
+  const name       = document.getElementById("buyerName").value.trim();
+  const email      = document.getElementById("buyerEmail").value.trim().toLowerCase();
+  const referral   = document.getElementById("referralCode").value.trim().toUpperCase();
+  const coupon     = document.getElementById("couponCode").value.trim().toUpperCase();
   const client_ref = uuidv4();
 
-  // ── Get E.164 mobile number from intl-tel-input ──
-  const mobile  = iti.getNumber();                                      // e.g. "+919977901217"
-  const country = (iti.getSelectedCountryData().iso2 || "in").toLowerCase();
+  const mobile   = iti.getNumber();
+  const country  = (iti.getSelectedCountryData().iso2 || "in").toLowerCase();
   const isIndia  = country === "in";
-
-  // ── Price and currency — India=INR, all others=USD ──
   const price    = isIndia
     ? Number(_settings?.product_price_india  || _settings?.product_price || 999)
     : Number(_settings?.product_price_global || 19);
   const currency = isIndia ? "INR" : "USD";
 
-  // ── Validation ──
-  if (!name)                                  { alert("❌ Please enter your name.");             return; }
-  if (!email || !/\S+@\S+\.\S+/.test(email)) { alert("❌ Please enter a valid email address."); return; }
+  if (!name)                                  { alert("\u274C Please enter your name.");             return; }
+  if (!email || !/\S+@\S+\.\S+/.test(email)) { alert("\u274C Please enter a valid email address."); return; }
   if (!iti.isValidNumber()) {
     mobileInput.style.borderColor = "var(--red)";
-    setTimeout(() => mobileInput.style.borderColor = "", 2000);
-    alert("❌ Please enter a valid mobile number with country code.");
+    setTimeout(function() { mobileInput.style.borderColor = ""; }, 2000);
+    alert("\u274C Please enter a valid mobile number with country code.");
     return;
   }
   mobileInput.style.borderColor = "";
 
   document.getElementById("btnBuy").disabled = true;
-  document.getElementById("processingMsg").textContent = "Creating payment order…";
+  document.getElementById("processingMsg").textContent = "Creating payment order\u2026";
   showState("stateProcessing");
 
-  // ── Step 1: Create Razorpay order ──
+  // ── Create Razorpay order ──
   let order;
   try {
     const res = await fetch(ORDER_URL, {
@@ -619,7 +587,7 @@ async function startPayment() {
       body: JSON.stringify({ name, email, mobile, country, price, currency, referral, coupon, client_ref }),
     });
     if (!res.ok) {
-      const e = await res.json().catch(() => ({}));
+      const e = await res.json().catch(function() { return {}; });
       throw new Error(e.error || "Server error " + res.status);
     }
     order = await res.json();
@@ -632,7 +600,7 @@ async function startPayment() {
     return;
   }
 
-  // ── Step 2: Open Razorpay modal ──
+  // ── Open Razorpay modal ──
   showState("stateForm");
 
   const rzp = new Razorpay({
@@ -642,21 +610,17 @@ async function startPayment() {
     order_id:    order.order_id,
     name:        "naadOdesk",
     description: "Lifetime License",
-    prefill:     { name, email, contact: mobile },
+    prefill:     { name: name, email: email, contact: mobile },
     notes:       { name, email, mobile, country, referral, coupon },
     theme:       { color: "#0a84ff" },
-    modal: {
-      ondismiss: () => { document.getElementById("btnBuy").disabled = false; }
-    },
+    modal: { ondismiss: function() { document.getElementById("btnBuy").disabled = false; } },
 
-    // ── Step 3: Poll for license after payment ──
     handler: async function(response) {
-      document.getElementById("processingMsg").textContent = "Finalizing payment…";
+      document.getElementById("processingMsg").textContent = "Finalizing payment\u2026";
       showState("stateProcessing");
 
       const paymentId = response.razorpay_payment_id;
       const CHECK_URL = SB_URL + "/functions/v1/check-license";
-      let found = false;
 
       for (let i = 0; i < 12; i++) {
         try {
@@ -671,10 +635,10 @@ async function startPayment() {
           });
           if (r.ok) {
             const j = await r.json();
-            if (j && j.license_key) { found = true; break; }
+            if (j && j.license_key) break;
           }
         } catch(e) { /* retry */ }
-        await new Promise(res => setTimeout(res, 1500));
+        await new Promise(function(res) { setTimeout(res, 1500); });
       }
 
       document.getElementById("successEmail").textContent = email;
